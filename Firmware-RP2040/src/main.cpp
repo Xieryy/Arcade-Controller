@@ -8,10 +8,13 @@ uint8_t const desc_hid_report[] = {
 Adafruit_USBD_HID usb_hid;
 hid_gamepad_report_t gp;
 
-const int PIN_LEFT  = 2;
-const int PIN_RIGHT = 3;
-const int PIN_DOWN  = 4;
-const int PIN_UP    = 5;
+const int PIN_UP    = 2;
+const int PIN_DOWN  = 3;
+const int PIN_RIGHT = 4;
+const int PIN_LEFT  = 5;
+
+const int BUTTON_1 = 6;
+const int BUTTON_2 = 7;
 
 void setup() {
   if (!TinyUSBDevice.isInitialized()) {
@@ -22,6 +25,9 @@ void setup() {
   pinMode(PIN_DOWN, INPUT_PULLUP);
   pinMode(PIN_LEFT, INPUT_PULLUP);
   pinMode(PIN_RIGHT, INPUT_PULLUP);
+
+  pinMode(BUTTON_1, INPUT_PULLUP);
+  pinMode(BUTTON_2, INPUT_PULLUP);
 
   usb_hid.setPollInterval(2);
   usb_hid.setReportDescriptor(
@@ -62,6 +68,9 @@ void loop() {
   else if (right)         gp.hat = 3;
   else if (down)          gp.hat = 5;
   else if (left)          gp.hat = 7;
+
+  if (digitalRead(BUTTON_1) == LOW) gp.buttons |= (1 << 0);
+  if (digitalRead(BUTTON_2) == LOW) gp.buttons |= (1 << 1);
 
   usb_hid.sendReport(0, &gp, sizeof(gp));
 
